@@ -10,27 +10,33 @@ ogame = OGame(
 
 def fleet(planetId, coordinates):
     availableShips = ogame.get_ships(planetId)
-    ships = [
-        (Ships['SmallCargo'], availableShips['small_cargo']),
-        (Ships['LargeCargo'], availableShips['large_cargo'])
-    ]
+    availableResources = ogame.get_resources(planetId)
 
     capacity = 0
     capacity += availableShips['small_cargo'] * 10000
     capacity += availableShips['large_cargo'] * 25000
 
-    speed = Speed['100%']
-
-    mission = Missions['Transport']
-
-    availableResources = ogame.get_resources(planetId)
     resources = {'metal': 0, 'crystal': 0, 'deuterium': 0}
 
+    # Prioritize deuterim, then crystal and then metal
     for type in ['deuterium', 'crystal', 'metal']:
         if (capacity > 0):
             resources[type] = availableResources[type] if availableResources[type] < capacity else capacity
-            capacity = capacity - resources[type]
+            capacity -= resources[type]
 
-    ogame.send_fleet(planetId, ships, speed, coordinates, mission, resources)
-    
+    # Exclude small cargoes that are not necessary
+    necessarySmallCargoes = max(0, availableShips['small_cargo'] - int(capacity / 10000))
+    capacity -= availableShips['small_cargo'] - necessarySmallCargoes
+
+    # Exclude large cargoes that are not necessary
+    necessaryLargeCargoes = max(0, availableShips['large_cargo'] - int(capacity / 25000))
+    capacity -= availableShips['large_cargo'] - necessaryLargeCargoes
+
+    ships = [
+        (Ships['SmallCargo'], necessarySmallCargoes),
+        (Ships['LargeCargo'], necessaryLargeCargoes)
+    ]
+
+    ogame.send_fleet(planetId, ships, Speed['100%'], coordinates, Missions['Transport'], resources)
+
     print(ships, resources, coordinates)
