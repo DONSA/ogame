@@ -8,9 +8,9 @@ ogame = OGame(
     config('PASSWORD')
 )
 
-def fleet(planetId, coordinates):
-    availableShips = ogame.get_ships(planetId)
-    availableResources = ogame.get_resources(planetId)
+def fleet(origin, destination):
+    availableShips = ogame.get_ships(origin['id'])
+    availableResources = ogame.get_resources(origin['id'])
 
     capacity = 0
     capacity += availableShips['small_cargo'] * 10000
@@ -37,6 +37,6 @@ def fleet(planetId, coordinates):
         (Ships['LargeCargo'], necessaryLargeCargoes)
     ]
 
-    ogame.send_fleet(planetId, ships, Speed['100%'], coordinates, Missions['Transport'], resources)
+    ogame.send_fleet(origin['id'], ships, Speed['100%'], destination['coordinates'], Missions['Transport'], resources)
 
-    print(ships, resources, coordinates)
+    print(ships, resources, origin['coordinates'])
