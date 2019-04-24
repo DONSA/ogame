@@ -6,4 +6,4 @@ from coordinates import planets, targets
 
 for k in targets.keys():
     sleep(round(random.uniform(4, 6), 1))
-    farm(planets['mercury-118'], targets[k])
+    farm(planets[sys.argv[1]], targets[k])

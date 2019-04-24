@@ -31,7 +31,7 @@ You can specify as many origin planets as you need.
 
 `python fleet.py destination origin1 origin2`
 
-`python attack.py`
+`python attack.py origin`
 
 To exit python virtual environment
 
