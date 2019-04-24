@@ -1,3 +1,12 @@
+targets = {
+    'alias1': {
+        'coordinates': {
+            'galaxy': 1,
+            'system': 100,
+            'position': 1
+        }
+    }
+}
 
 planets = {
     'alias1': {

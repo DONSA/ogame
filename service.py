@@ -1,3 +1,4 @@
+import sys
 from decouple import config
 from ogame import OGame
 from ogame.constants import Ships, Speed, Missions, Buildings, Research, Defense
@@ -7,6 +8,15 @@ ogame = OGame(
     config('USERNAME'),
     config('PASSWORD')
 )
+
+def farm(origin, destination):
+    ships = [
+        (Ships['SmallCargo'], 100)
+    ]
+
+    ogame.send_fleet(origin['id'], ships, Speed['100%'], destination['coordinates'], Missions['Attack'], {})
+
+    print(ships, destination)
 
 def fleet(origin, destination):
     availableShips = ogame.get_ships(origin['id'])

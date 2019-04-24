@@ -15,7 +15,7 @@ Clone the repository
 
 Edit .env and add your credentials
 
-Edit planets.py file and add your planets info
+Edit coordinates.py file and add your planets info
 
 `source bin/activate`
 
@@ -26,10 +26,12 @@ Install necessary modules if you are running the script for the first time
 
 ## Run
 
-First argument should be the destination planet **alias** specified in `planets.py` followed by origin.
+First argument should be the destination planet **alias** specified in `coordinates.py` followed by origin.
 You can specify as many origin planets as you need.
 
 `python fleet.py destination origin1 origin2`
+
+`python attack.py`
 
 To exit python virtual environment
 
