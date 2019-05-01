@@ -15,38 +15,37 @@ def farm(origin, destination):
     ]
 
     ogame.send_fleet(origin['id'], ships, Speed['100%'], destination['coordinates'], Missions['Attack'], {})
-
     print(ships, destination)
 
 def fleet(origin, destination):
     availableShips = ogame.get_ships(origin['id'])
     availableResources = ogame.get_resources(origin['id'])
 
-    capacity = 0
-    capacity += availableShips['small_cargo'] * 10000
-    capacity += availableShips['large_cargo'] * 25000
-
+    smallCargoes = largeCargoes = 0
     resources = {'metal': 0, 'crystal': 0, 'deuterium': 0}
 
     # Prioritize deuterim, then crystal and then metal
-    for type in ['deuterium', 'crystal', 'metal']:
-        if (capacity > 0):
-            resources[type] = availableResources[type] if availableResources[type] < capacity else capacity
-            capacity -= resources[type]
+    for resource in ['deuterium', 'crystal', 'metal']:
+        for i in range(availableShips['small_cargo']):
+            if (availableResources[resource] > 0 and availableShips['small_cargo'] > 0):
+                amount = min(10000, availableResources[resource])
+                resources[resource] += amount
+                availableResources[resource] -= amount
+                smallCargoes += 1
+                availableShips['small_cargo'] -= 1
 
-    # Exclude small cargoes that are not necessary
-    necessarySmallCargoes = max(0, availableShips['small_cargo'] - int(capacity / 10000))
-    capacity -= availableShips['small_cargo'] - necessarySmallCargoes
-
-    # Exclude large cargoes that are not necessary
-    necessaryLargeCargoes = max(0, availableShips['large_cargo'] - int(capacity / 25000))
-    capacity -= availableShips['large_cargo'] - necessaryLargeCargoes
+        for i in range(availableShips['large_cargo']):
+            if (availableResources[resource] > 0 and availableShips['large_cargo'] > 0):
+                amount = min(25000, availableResources[resource])
+                resources[resource] += amount
+                availableResources[resource] -= amount
+                largeCargoes += 1
+                availableShips['large_cargo'] -= 1
 
     ships = [
-        (Ships['SmallCargo'], necessarySmallCargoes),
-        (Ships['LargeCargo'], necessaryLargeCargoes)
+        (Ships['SmallCargo'], smallCargoes),
+        (Ships['LargeCargo'], largeCargoes)
     ]
 
     ogame.send_fleet(origin['id'], ships, Speed['100%'], destination['coordinates'], Missions['Transport'], resources)
-
     print(ships, resources, origin['coordinates'])
